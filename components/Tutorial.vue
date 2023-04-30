@@ -4,6 +4,7 @@
   >
     <button @click="exportText('txt')">exportText(text)</button>
     <button @click="exportText('docx')">exportText(docx)</button>
+    <button @click="generate()">generate</button>
   </div>
 </template>
 
@@ -49,12 +50,14 @@ export default {
           sections: [
             {
               properties: {},
-              children: content.map(
-                (item) =>
-                  new docx.Paragraph({
-                    children: [new docx.TextRun(item)],
-                  })
-              ),
+              children: content.map((item) => {
+                const textString = item
+                  .split("\\n")
+                  .map((line) => new docx.TextRun({ break: 1, text: line }));
+                return new docx.Paragraph({
+                  children: textString,
+                });
+              }),
             },
           ],
         });
